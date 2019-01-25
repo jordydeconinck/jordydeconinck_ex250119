@@ -1,0 +1,45 @@
+## ENSEMBL API
+
+12. What is the mapping location of the variant rs4224828 in the mouse?
+
+   $ curl 'http://rest.ensembl.org/variation/mus_musculus/rs4224828' -H 'Content-type:aplication/json'
+
+ANSWER: 
+
+MAF: ~
+ambiguity: &#39;Y&#39;
+ancestral_allele: ~
+evidence: 
+  - Multiple_observations
+  - Frequency
+mappings: 
+  - 
+    allele_string: T/C
+    assembly_name: GRCm38
+    coord_system: chromosome
+    end: 136443949
+    location: 4:136443949-136443949
+    seq_region_name: 4
+    start: 136443949
+    strand: 1
+minor_allele: ~
+most_severe_consequence: 3_prime_UTR_variant
+name: rs4224828
+source: Variants (including SNPs and indels) imported from dbSNP
+
+   
+13. Give the first 100 bases of the genomic FASTA sequence of the MYCN gene in the zebrafish.
+
+   $ curl 'http://rest.ensembl.org/lookup/symbol/zebrafish/MYCN' -H 'Content-type:application/json'
+
+ID from the gene: ENSDARG00000006837
+
+   $ curl 'http://rest.ensembl.org/sequence/id/ENSDARG00000006837?type=genomic;end=100' -H 'Content-type:text/x-fasta'
+   
+ANSWER: 
+>ENSDARG00000006837.9 chromosome:GRCz11:20:33294428:33294527:1
+
+TAGAATAATACTTCACAGCCCGAAACACAGAGGCGCAGAACAGTCTTCAGTCGCCGCGGT
+AGATGTGCGACTCCAAACGGGAGGCACAGTGACTGCGATA
+
+   
