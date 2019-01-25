@@ -1,0 +1,301 @@
+### MONGODB 
+
+8. Give the number of medicines taken with a lozenge (TABLET;BUCCAL, SUBLINGUAL). Make sure that your query only shows the name of the drug.
+
+   > db.bioinf_mongo_examen.find({"method_of_admission":"TABLET;BUCCAL, SUBLINGUAL"}, {drug:1})
+   
+ANSWER: DEMULEN 1/35-28
+   
+
+9. Give the number of medicines that have side effects in more than 8% of cases.
+
+   > db.bioinf_mongo_examen.find({percentage_of_side_effects:{$gt: 8} }).count()
+
+ANSWER: 399
+
+
+10. Give the names of the companies that produce medicines that on average  cause side effects in more than 10% of cases? Sort your results according to decreasing percentage of side effects.
+
+   > db.bioinf_mongo_examen.aggregate([{$group: {_id:"$company", avgeffects: {$avg: "$percentage_of_side_effects"}}}, {$match: {avgeffects: {$gt: 10}}}, {$sort:{avgeffects:-1} }])
+  
+ANSWER:  Galderma Laboratories, L.P., avgeffects : 11.5 
+         Watson Pharmaceuticals, Inc., avgeffects : 10.65 
+         Durata Therapeutics, Inc., avgeffects : 10.5 
+
+
+11. Specify the lower and upper limits of the percentage of side effects of medicines within companies that produce more than 1 drug.
+
+   > db.bioinf_mongo_examen.aggregate([{$group:{_id:"$company", min:{$min:"$percentage_of_side_effects"}, max:{$max: "$percentage_of_side_effects"}, count_per_comp:{$sum:1} }}, {$match: {count_per_comp:{$gt: 1}}}])
+   
+ANSWER: 
+{ "_id" : "West-Ward Pharmaceuticals", "min" : 5.6, "max" : 6.5, "count" : 2 }
+{ "_id" : "ViiV Healthcare", "min" : 5.8, "max" : 10.2, "count" : 4 }
+{ "_id" : "Vertical Pharmaceuticals, LLC", "min" : 7, "max" : 9.5, "count" : 2 }
+{ "_id" : "URL Pharma, Inc.", "min" : 7.5, "max" : 9, "count" : 3 }
+{ "_id" : "Upsher-Smith Laboratories Inc.", "min" : 6, "max" : 11.5, "count" : 3 }
+{ "_id" : "Turing Pharmaceuticals LLC", "min" : 5.7, "max" : 9, "count" : 5 }
+{ "_id" : "Torrent Pharmaceuticals Limited", "min" : 5.2, "max" : 8.5, "count" : 5 }
+{ "_id" : "Teva Pharmaceuticals USA, Inc.", "min" : 5.2, "max" : 8.5, "count" : 3 }
+{ "_id" : "Tesaro Inc.", "min" : 4.5, "max" : 8.1, "count" : 3 }
+{ "_id" : "Takeda Pharmaceuticals U.S.A., Inc.", "min" : 7, "max" : 9, "count" : 3 }
+{ "_id" : "Synthon Pharmaceuticals Inc.", "min" : 7, "max" : 8, "count" : 2 }
+{ "_id" : "Spear Pharmaceuticals", "min" : 8.5, "max" : 8.5, "count" : 2 }
+{ "_id" : "Sirion Therapeutics, Inc.", "min" : 5, "max" : 8.2, "count" : 4 }
+{ "_id" : "Silvergate Pharmaceuticals, Inc.", "min" : 7.4, "max" : 8, "count" : 2 }
+{ "_id" : "Roche", "min" : 5.2, "max" : 7.1, "count" : 4 }
+{ "_id" : "Xanodyne Pharmaceuticals, Inc", "min" : 7, "max" : 10, "count" : 4 }
+{ "_id" : "UCB, Inc.", "min" : 5.5, "max" : 9, "count" : 4 }
+{ "_id" : "Qualitest Pharmaceuticals", "min" : 6, "max" : 8.5, "count" : 2 }
+{ "_id" : "Procter & Gamble", "min" : 6, "max" : 6.4, "count" : 2 }
+{ "_id" : "Pozen Inc.", "min" : 6, "max" : 6, "count" : 3 }
+Type "it" for more
+> it
+{ "_id" : "Paddock Laboratories, Inc.,", "min" : 7.8, "max" : 8.4, "count" : 2 }
+{ "_id" : "Ortho-McNeil-Janssen Pharmaceuticals, Inc.", "min" : 6, "max" : 7.5, "count" : 3 }
+{ "_id" : "OPKO Health, Inc.", "min" : 4, "max" : 8, "count" : 15 }
+{ "_id" : "SIGA Technologies, Inc.", "min" : 7.5, "max" : 11.3, "count" : 3 }
+{ "_id" : "Omeros Corporation", "min" : 8.5, "max" : 8.5, "count" : 2 }
+{ "_id" : "Onyx Pharmaceuticals, Inc.", "min" : 6.4, "max" : 7, "count" : 2 }
+{ "_id" : "NorthStar Rx LLC", "min" : 5, "max" : 6, "count" : 5 }
+{ "_id" : "Neurocrine Biosciences, Inc.", "min" : 5, "max" : 9, "count" : 5 }
+{ "_id" : "Neos Therapeutics, Inc.", "min" : 5.2, "max" : 10, "count" : 6 }
+{ "_id" : "Mylan Pharmaceuticals Inc.", "min" : 5.9, "max" : 8.5, "count" : 4 }
+{ "_id" : "Wellstat Therapeutics Corporation", "min" : 5.5, "max" : 7.5, "count" : 2 }
+{ "_id" : "Motif Bio plc", "min" : 5.4, "max" : 10.5, "count" : 8 }
+{ "_id" : "Molnlycke Healthcare", "min" : 8, "max" : 9.5, "count" : 2 }
+{ "_id" : "Medicure Pharma, Inc.", "min" : 5.5, "max" : 9, "count" : 7 }
+{ "_id" : "MediQuest Therapeutics Inc", "min" : 6.5, "max" : 8.7, "count" : 4 }
+{ "_id" : "Northfield Laboratories Inc.", "min" : 6.5, "max" : 9, "count" : 10 }
+{ "_id" : "Warner Chilcott", "min" : 3.5, "max" : 6.2, "count" : 2 }
+{ "_id" : "Medicis Pharmaceutical Corporation", "min" : 8.5, "max" : 10, "count" : 2 }
+{ "_id" : "Osiris Therapeutics, Inc.", "min" : 6, "max" : 12, "count" : 10 }
+{ "_id" : "Martin Ekwealor Pharmceuticals, Inc.", "min" : 6.5, "max" : 8.7, "count" : 2 }
+Type "it" for more
+> it
+{ "_id" : "Martek Biosciences Company", "min" : 0, "max" : 7, "count" : 2 }
+{ "_id" : "Marathon Pharmaceuticals, LLC", "min" : 5, "max" : 8, "count" : 8 }
+{ "_id" : "Major Pharmaceuticals", "min" : 6, "max" : 8.5, "count" : 4 }
+{ "_id" : "Lupin Pharmaceuticals, Inc.", "min" : 6.2, "max" : 8.3, "count" : 4 }
+{ "_id" : "Nivagen Pharmaceuticals, Inc.", "min" : 7, "max" : 8, "count" : 3 }
+{ "_id" : "Centrix Pharmaceutical, Inc.", "min" : 1.8, "max" : 7.5, "count" : 20 }
+{ "_id" : "Celgene Corporation", "min" : 8, "max" : 9, "count" : 2 }
+{ "_id" : "Nostrum Laboratories, Inc.", "min" : 5.5, "max" : 8.5, "count" : 3 }
+{ "_id" : "Cardinal Health", "min" : 10, "max" : 10, "count" : 2 }
+{ "_id" : "Camber Pharmaceuticals, Inc.", "min" : 6.5, "max" : 10, "count" : 2 }
+{ "_id" : "Morton Grove Pharmaceuticals, Inc.", "min" : 6.2, "max" : 12, "count" : 8 }
+{ "_id" : "Bristol-Myers Squibb Company", "min" : 5, "max" : 10, "count" : 21 }
+{ "_id" : "Aero Pharma", "min" : 3.1, "max" : 6.5, "count" : 9 }
+{ "_id" : "Genentech, Inc.", "min" : 5.2, "max" : 6.5, "count" : 3 }
+{ "_id" : "BioMarin Pharmaceutical Inc.", "min" : 6, "max" : 11, "count" : 5 }
+{ "_id" : "BD Rx Inc.", "min" : 6, "max" : 9, "count" : 4 }
+{ "_id" : "Gilead Sciences, Inc.", "min" : 5, "max" : 6, "count" : 5 }
+{ "_id" : "MCR American Pharmaceuticals, Inc.", "min" : 7.5, "max" : 7.5, "count" : 2 }
+{ "_id" : "Bayer HealthCare Pharmaceuticals Inc.", "min" : 3.5, "max" : 9.5, "count" : 8 }
+{ "_id" : "Acella Pharmaceuticals, LLC", "min" : 5, "max" : 9.5, "count" : 16 }
+Type "it" for more
+> it
+{ "_id" : "Avanir Pharmaceuticals, Inc.", "min" : 4.5, "max" : 9.5, "count" : 2 }
+{ "_id" : "Alvogen, Inc.", "min" : 0, "max" : 10, "count" : 18 }
+{ "_id" : "ANI Pharmaceuticals, Inc.", "min" : 6.5, "max" : 8, "count" : 2 }
+{ "_id" : "Roxro Pharma, Inc.", "min" : 6, "max" : 10, "count" : 3 }
+{ "_id" : "Caraco Pharmaceutical Laboratories, Ltd.", "min" : 4.4, "max" : 9, "count" : 10 }
+{ "_id" : "AstraZeneca Pharmaceuticals LP", "min" : 5.2, "max" : 8, "count" : 3 }
+{ "_id" : "Aurobindo Pharma Limited", "min" : 6.5, "max" : 8.5, "count" : 3 }
+{ "_id" : "Bayer Healthcare Consumer Care", "min" : 10, "max" : 10, "count" : 2 }
+{ "_id" : "BioDelivery Sciences International, Inc.", "min" : 4, "max" : 11, "count" : 7 }
+{ "_id" : "ARCA biopharma, Inc.", "min" : 6.5, "max" : 8.1, "count" : 4 }
+{ "_id" : "Fibrocell Science, Inc.", "min" : 4.5, "max" : 9, "count" : 10 }
+{ "_id" : "Perrigo Company", "min" : 8, "max" : 10.7, "count" : 2 }
+{ "_id" : "Capellon Pharmaceuticals, LLC", "min" : 0, "max" : 9.5, "count" : 15 }
+{ "_id" : "Espero Pharmaceuticals, Inc.", "min" : 4.8, "max" : 9, "count" : 4 }
+{ "_id" : "Hemispherx Biopharma, Inc.", "min" : 4, "max" : 8, "count" : 11 }
+{ "_id" : "Astex Pharmaceuticals, Inc.", "min" : 1, "max" : 5.1, "count" : 3 }
+{ "_id" : "Blue Earth Diagnostics, Ltd.", "min" : 4.5, "max" : 8, "count" : 6 }
+{ "_id" : "Arbor Pharmaceuticals, LLC", "min" : 0.3, "max" : 9.2, "count" : 21 }
+{ "_id" : "Apricus Biosciences, Inc.", "min" : 5, "max" : 10, "count" : 6 }
+{ "_id" : "CSL Behring", "min" : 7.5, "max" : 9, "count" : 3 }
+Type "it" for more
+> it
+{ "_id" : "Carlsbad Technology, Inc.", "min" : 5.5, "max" : 11, "count" : 15 }
+{ "_id" : "Concordia Pharmaceuticals Inc.", "min" : 8.2, "max" : 11.5, "count" : 8 }
+{ "_id" : "Breckenridge Pharmaceutical, Inc.", "min" : 4.9, "max" : 8.5, "count" : 8 }
+{ "_id" : "Advanced Life Sciences, Inc.", "min" : 0.5, "max" : 8.5, "count" : 13 }
+{ "_id" : "Akorn, Inc.", "min" : 1.4, "max" : 7, "count" : 5 }
+{ "_id" : "Windtree Therapeutics, Inc.", "min" : 7.4, "max" : 9, "count" : 3 }
+{ "_id" : "Acusphere, Inc.", "min" : 0, "max" : 11.5, "count" : 32 }
+{ "_id" : "VersaPharm Incorporated", "min" : 5.5, "max" : 8.5, "count" : 3 }
+{ "_id" : "Baxalta Incorporated", "min" : 5.8, "max" : 8, "count" : 5 }
+{ "_id" : "Acorda Therapeutics, Inc.", "min" : 5.2, "max" : 10, "count" : 5 }
+{ "_id" : "Johnson & Johnson", "min" : 6.5, "max" : 10, "count" : 7 }
+{ "_id" : "Amherst Pharmaceuticals, LLC", "min" : 3, "max" : 10, "count" : 43 }
+{ "_id" : "Actelion Pharmaceuticals US, Inc.", "min" : 6, "max" : 10, "count" : 11 }
+{ "_id" : "Laser Pharmaceuticals, LLC", "min" : 6, "max" : 7.8, "count" : 2 }
+{ "_id" : "Asklepion Pharmaceuticals LLC", "min" : 8.5, "max" : 10, "count" : 2 }
+{ "_id" : "Keryx Biopharmaceuticals, Inc.", "min" : 4, "max" : 4, "count" : 2 }
+{ "_id" : "B.F. Ascher & Company, Inc.", "min" : 5, "max" : 8.5, "count" : 11 }
+{ "_id" : "Abbott Laboratories", "min" : 6, "max" : 7.5, "count" : 3 }
+{ "_id" : "Savient Pharmaceuticals, Inc.", "min" : 6.5, "max" : 10.5, "count" : 2 }
+{ "_id" : "Accord Healthcare Inc.", "min" : 5, "max" : 9, "count" : 8 }
+Type "it" for more
+> it
+{ "_id" : "Valeant Pharmaceuticals International, Inc.", "min" : 6, "max" : 10.5, "count" : 4 }
+{ "_id" : "Allergan, Inc.", "min" : 0, "max" : 8.7, "count" : 20 }
+{ "_id" : "Leading Pharma, LLC", "min" : 4.2, "max" : 8.5, "count" : 7 }
+{ "_id" : "Fera Pharmaceuticals", "min" : 6.5, "max" : 8.5, "count" : 7 }
+{ "_id" : "Dyax Corp", "min" : 6.9, "max" : 8.7, "count" : 5 }
+{ "_id" : "AbbVie Inc.", "min" : 5, "max" : 26, "count" : 32 }
+{ "_id" : "Advance Pharmaceutical Inc.", "min" : 0.4, "max" : 8.5, "count" : 27 }
+{ "_id" : "Otonomy, Inc.", "min" : 5, "max" : 8, "count" : 3 }
+{ "_id" : "Eli Lilly and Company", "min" : 6.1, "max" : 6.6, "count" : 2 }
+{ "_id" : "Janssen Biotech, Inc.", "min" : 6, "max" : 9, "count" : 2 }
+{ "_id" : "Axcan Pharma", "min" : 4.8, "max" : 9, "count" : 4 }
+{ "_id" : "Accredo Health Group, Inc.", "min" : 3.5, "max" : 8.3, "count" : 17 }
+{ "_id" : "A-S Medication Solutions, LLC", "min" : 5.2, "max" : 9, "count" : 7 }
+{ "_id" : "Grifols USA, LLC", "min" : 6.5, "max" : 8.5, "count" : 3 }
+{ "_id" : "Gemini Pharmaceuticals", "min" : 6.5, "max" : 8, "count" : 3 }
+{ "_id" : "AG Marin Pharmaceutical", "min" : 6, "max" : 6, "count" : 4 }
+{ "_id" : "Adolor Corporation", "min" : 7, "max" : 9, "count" : 2 }
+{ "_id" : "Aralez Pharmaceuticals Inc.", "min" : 3.5, "max" : 3.5, "count" : 3 }
+{ "_id" : "Otsuka Pharmaceutical Co., Ltd", "min" : 8, "max" : 10, "count" : 2 }
+{ "_id" : "Atley Pharmaceuticals, Inc.", "min" : 3, "max" : 8, "count" : 12 }
+Type "it" for more
+> it
+{ "_id" : "AkPharma Inc", "min" : 3.8, "max" : 15, "count" : 30 }
+{ "_id" : "Anika Therapeutics, Inc.", "min" : 6, "max" : 8, "count" : 6 }
+{ "_id" : "Endo Pharmaceuticals Inc.", "min" : 5.5, "max" : 8.4, "count" : 4 }
+{ "_id" : "Biofrontera AG", "min" : 5.5, "max" : 7.1, "count" : 5 }
+{ "_id" : "Sepracor Inc.", "min" : 3.5, "max" : 7, "count" : 6 }
+{ "_id" : "ISTA Pharmaceuticals, Inc.", "min" : 5.3, "max" : 10, "count" : 8 }
+{ "_id" : "Pharmacyclics, Inc.", "min" : 6.7, "max" : 8.2, "count" : 2 }
+{ "_id" : "Ilex Consumer Products Group, Inc.", "min" : 5, "max" : 7, "count" : 5 }
+{ "_id" : "AMAG Pharmaceuticals, Inc.", "min" : 4.9, "max" : 8.5, "count" : 10 }
+{ "_id" : "Kremers Urban Pharmaceuticals Inc.", "min" : 6.9, "max" : 8.5, "count" : 5 }
+{ "_id" : "Kythera Biopharmaceuticals, Inc.", "min" : 6, "max" : 7.3, "count" : 2 }
+{ "_id" : "Alaven Pharmaceuticals", "min" : 5, "max" : 8, "count" : 8 }
+{ "_id" : "Chain Drug Marketing Association", "min" : 6, "max" : 9, "count" : 13 }
+{ "_id" : "Alcon", "min" : 3.5, "max" : 11, "count" : 17 }
+{ "_id" : "Amylin Pharmaceuticals, Inc.", "min" : 4.5, "max" : 9.5, "count" : 6 }
+{ "_id" : "Chugai Pharma USA, Inc.", "min" : 0, "max" : 8, "count" : 12 }
+{ "_id" : "Wallace Pharmaceuticals Inc.", "min" : 8, "max" : 8, "count" : 3 }
+{ "_id" : "Amgen Inc.", "min" : 5, "max" : 7, "count" : 11 }
+{ "_id" : "Alexion Pharmaceuticals, Inc.", "min" : 5, "max" : 8, "count" : 6 }
+{ "_id" : "Hillestad Pharmaceuticals, Inc.", "min" : 5, "max" : 5, "count" : 6 }
+Type "it" for more
+> i
+2019-01-25T16:52:43.866+0100 E QUERY    [js] ReferenceError: i is not defined :
+@(shell):1:1
+> it
+{ "_id" : "Macleods Pharmaceuticals Limited", "min" : 5, "max" : 8, "count" : 6 }
+{ "_id" : "Depomed, Inc.", "min" : 6, "max" : 8.5, "count" : 8 }
+{ "_id" : "Janssen Pharmaceuticals, Inc.", "min" : 5, "max" : 5.5, "count" : 3 }
+{ "_id" : "Watson Pharmaceuticals, Inc.", "min" : 8.3, "max" : 13, "count" : 2 }
+{ "_id" : "Amneal Pharmaceuticals LLC", "min" : 4.5, "max" : 10, "count" : 3 }
+{ "_id" : "Bayshore Pharmaceuticals LLC", "min" : 4.5, "max" : 8.5, "count" : 3 }
+{ "_id" : "Allegis Pharmaceuticals, LLC", "min" : 5, "max" : 5.8, "count" : 2 }
+{ "_id" : "Anchen Pharmaceuticals, Inc", "min" : 0, "max" : 11, "count" : 36 }
+{ "_id" : "Relypsa, Inc.", "min" : 5, "max" : 5.9, "count" : 2 }
+{ "_id" : "AvKare, Inc.", "min" : 6.2, "max" : 8, "count" : 2 }
+{ "_id" : "Anacor Pharmaceuticals, Inc.", "min" : 4.5, "max" : 9, "count" : 8 }
+{ "_id" : "Biogen", "min" : 5.5, "max" : 12, "count" : 9 }
+{ "_id" : "Andrx Pharmaceuticals", "min" : 5.1, "max" : 9, "count" : 10 }
+{ "_id" : "Alliance Pharma plc", "min" : 6, "max" : 13, "count" : 8 }
+{ "_id" : "Cubist Pharmaceuticals, Inc.", "min" : 6.5, "max" : 8.7, "count" : 4 }
+{ "_id" : "Clovis Oncology, Inc.", "min" : 7.5, "max" : 7.5, "count" : 2 }
+{ "_id" : "Roxane Laboratories, Inc.", "min" : 5, "max" : 7.6, "count" : 7 }
+{ "_id" : "Flamel Technologies", "min" : 4.5, "max" : 9, "count" : 8 }
+{ "_id" : "EUSA Pharma", "min" : 1.5, "max" : 8.5, "count" : 10 }
+{ "_id" : "Collegium Pharmaceutical, Inc.", "min" : 7, "max" : 10, "count" : 6 }
+Type "it" for more
+> i
+2019-01-25T16:52:46.057+0100 E QUERY    [js] ReferenceError: i is not defined :
+@(shell):1:1
+> it
+{ "_id" : "Aegerion Pharmaceuticals, Inc.", "min" : 6.8, "max" : 9, "count" : 5 }
+{ "_id" : "CordenPharma International", "min" : 4, "max" : 6, "count" : 14 }
+{ "_id" : "CorePharma, LLC", "min" : 5.5, "max" : 9, "count" : 9 }
+{ "_id" : "Merrimack Pharmaceuticals, Inc.", "min" : 6.4, "max" : 6.4, "count" : 2 }
+{ "_id" : "Braintree Laboratories Inc.", "min" : 5.5, "max" : 8.5, "count" : 12 }
+{ "_id" : "Colgate Oral Pharmaceuticals", "min" : 6, "max" : 8.5, "count" : 7 }
+{ "_id" : "Daiichi Sankyo", "min" : 2.5, "max" : 12, "count" : 31 }
+{ "_id" : "Summers Laboratories", "min" : 5.5, "max" : 10.5, "count" : 7 }
+{ "_id" : "GTx, Inc.", "min" : 6, "max" : 7.5, "count" : 4 }
+{ "_id" : "Kyowa Kirin Pharmaceutical Development, Inc.", "min" : 5, "max" : 9.5, "count" : 5 }
+{ "_id" : "OncoGenex Pharmaceuticals Inc.", "min" : 7, "max" : 7, "count" : 2 }
+{ "_id" : "Iroko Pharmaceuticals, LLC", "min" : 0, "max" : 0, "count" : 3 }
+{ "_id" : "Ascend Laboratories LLC", "min" : 4.5, "max" : 8.5, "count" : 14 }
+{ "_id" : "Inspirion Delivery Technologies, LLC", "min" : 6.3, "max" : 6.3, "count" : 2 }
+{ "_id" : "King Pharmaceuticals, Inc.", "min" : 6.2, "max" : 8, "count" : 2 }
+{ "_id" : "Ionis Pharmaceuticals, Inc.", "min" : 5, "max" : 5.2, "count" : 3 }
+{ "_id" : "Dr. Reddy's Laboratories, Inc.", "min" : 6.5, "max" : 9, "count" : 9 }
+{ "_id" : "Dey Pharma", "min" : 6, "max" : 8, "count" : 5 }
+{ "_id" : "Incyte Corporation", "min" : 5, "max" : 6.5, "count" : 3 }
+{ "_id" : "Durata Therapeutics, Inc.", "min" : 7, "max" : 13, "count" : 12 }
+Type "it" for more
+> i
+2019-01-25T16:52:48.586+0100 E QUERY    [js] ReferenceError: i is not defined :
+@(shell):1:1
+> it
+{ "_id" : "Edwards Pharmaceuticals", "min" : 4.5, "max" : 5.7, "count" : 2 }
+{ "_id" : "Egalet Corporation", "min" : 5, "max" : 9, "count" : 9 }
+{ "_id" : "DAVA Pharmaceuticals, Inc.", "min" : 6, "max" : 11, "count" : 5 }
+{ "_id" : "Genpharm", "min" : 3, "max" : 8.8, "count" : 9 }
+{ "_id" : "Elan Corporation, plc", "min" : 5, "max" : 8.5, "count" : 11 }
+{ "_id" : "Nycomed", "min" : 6, "max" : 11, "count" : 5 }
+{ "_id" : "Sanofi-Aventis U.S. LLC", "min" : 5.4, "max" : 6.6, "count" : 3 }
+{ "_id" : "Elusys Therapeutics, Inc.", "min" : 5.5, "max" : 10, "count" : 6 }
+{ "_id" : "Pharmacia & Upjohn Company LLC", "min" : 8.1, "max" : 8.2, "count" : 2 }
+{ "_id" : "American Regent, Inc.", "min" : 8, "max" : 8.5, "count" : 2 }
+{ "_id" : "EMD Serono, Inc.", "min" : 6.2, "max" : 9, "count" : 6 }
+{ "_id" : "EpiCept Corporation", "min" : 3.5, "max" : 5.6, "count" : 13 }
+{ "_id" : "Ethex Corporation", "min" : 6, "max" : 9, "count" : 3 }
+{ "_id" : "Eagle Pharmaceuticals, Inc.", "min" : 5, "max" : 6, "count" : 8 }
+{ "_id" : "Chelsea Therapeutics", "min" : 6.5, "max" : 6.8, "count" : 3 }
+{ "_id" : "Fresenius Medical Care", "min" : 2.5, "max" : 6, "count" : 11 }
+{ "_id" : "X-GEN Pharmaceuticals, Inc.", "min" : 8.5, "max" : 10, "count" : 3 }
+{ "_id" : "Nagase America Corp.", "min" : 5.9, "max" : 7, "count" : 2 }
+{ "_id" : "Fresenius Kabi USA, LLC", "min" : 6.5, "max" : 8.3, "count" : 5 }
+{ "_id" : "G.D. Searle LLC", "min" : 8, "max" : 8, "count" : 3 }
+Type "it" for more
+> it
+{ "_id" : "Elorac, Inc.", "min" : 4.3, "max" : 6.8, "count" : 3 }
+{ "_id" : "Gavis Pharmaceuticals, LLC", "min" : 5.2, "max" : 8, "count" : 4 }
+{ "_id" : "Prestige Brands", "min" : 5, "max" : 6.5, "count" : 3 }
+{ "_id" : "Trimel Pharmaceuticals Corporation", "min" : 6.2, "max" : 6.6, "count" : 2 }
+{ "_id" : "Baxter International Inc.", "min" : 5, "max" : 8.5, "count" : 6 }
+{ "_id" : "Agenus Inc.", "min" : 5.2, "max" : 10, "count" : 4 }
+{ "_id" : "Gentex Pharma", "min" : 7, "max" : 9, "count" : 7 }
+{ "_id" : "Geron Corporation", "min" : 6.5, "max" : 9, "count" : 5 }
+{ "_id" : "Aqua Pharmaceuticals LLC", "min" : 4.5, "max" : 10, "count" : 11 }
+{ "_id" : "Halozyme Therapeutics, Inc.", "min" : 3, "max" : 9, "count" : 7 }
+{ "_id" : "Actavis Pharma, Inc.", "min" : 5, "max" : 9, "count" : 15 }
+{ "_id" : "GlaxoSmithKline", "min" : 6, "max" : 8, "count" : 5 }
+{ "_id" : "Seqirus", "min" : 6, "max" : 7, "count" : 2 }
+{ "_id" : "GlaxoSmithKline Consumer Healthcare LP", "min" : 4, "max" : 11.5, "count" : 4 }
+{ "_id" : "Hope Pharmaceuticals", "min" : 4.6, "max" : 6, "count" : 4 }
+{ "_id" : "Astellas Pharma US, Inc.", "min" : 4.3, "max" : 5.7, "count" : 4 }
+{ "_id" : "Global Pharmaceuticals", "min" : 0, "max" : 12, "count" : 14 }
+{ "_id" : "Graceway Pharmaceuticals, LLC", "min" : 5, "max" : 12, "count" : 5 }
+{ "_id" : "Acura Pharmaceuticals, Inc.", "min" : 5, "max" : 8.2, "count" : 4 }
+{ "_id" : "Paladin Labs Inc.", "min" : 0, "max" : 8, "count" : 3 }
+Type "it" for more
+> it
+{ "_id" : "Adapt Pharma, Inc.", "min" : 5, "max" : 9.5, "count" : 6 }
+{ "_id" : "Helix BioPharma Corp", "min" : 5.4, "max" : 6.2, "count" : 2 }
+{ "_id" : "Heritage Pharmaceuticals Inc.", "min" : 5, "max" : 9, "count" : 10 }
+{ "_id" : "Cephalon, Inc.", "min" : 0.25, "max" : 7.5, "count" : 15 }
+{ "_id" : "Hill Dermaceuticals, Inc.", "min" : 4.3, "max" : 8, "count" : 6 }
+{ "_id" : "Jubilant Cadista Pharmaceuticals Inc.", "min" : 3.5, "max" : 8.5, "count" : 10 }
+{ "_id" : "Akrimax Pharmaceuticals, LLC", "min" : 5, "max" : 8.7, "count" : 3 }
+{ "_id" : "Aprecia Pharmaceuticals Company", "min" : 0.5, "max" : 8, "count" : 24 }
+{ "_id" : "Genzyme Corporation", "min" : 0.5, "max" : 3.8, "count" : 9 }
+{ "_id" : "Jazz Pharmaceuticals plc", "min" : 8, "max" : 8.5, "count" : 3 }
+{ "_id" : "Kaleo Inc.", "min" : 5, "max" : 9, "count" : 5 }
+{ "_id" : "Biovail Corporation", "min" : 4.8, "max" : 7, "count" : 5 }
+{ "_id" : "Exelixis, Inc.", "min" : 5, "max" : 5.5, "count" : 2 }
+{ "_id" : "K-V Pharmaceutical Company", "min" : 6.5, "max" : 7.7, "count" : 2 }
+{ "_id" : "Kedrion Biopharma, Inc.", "min" : 5, "max" : 5.5, "count" : 2 }
+{ "_id" : "Tagi Pharma Inc.", "min" : 4.8, "max" : 7.5, "count" : 3 }
+{ "_id" : "Oak Pharmaceuticals, Inc.", "min" : 4.3, "max" : 9, "count" : 3 }
+{ "_id" : "KVK-Tech, Inc.", "min" : 4.6, "max" : 5, "count" : 2 }
+> i
+
