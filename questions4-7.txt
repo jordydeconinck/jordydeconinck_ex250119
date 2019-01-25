@@ -1,0 +1,151 @@
+### SQL STATEMENTS
+
+mysql> show tables from bioinf_examen;
++-------------------------+
+| Tables_in_bioinf_examen |
++-------------------------+
+| exon                    |
+| exon_transcript         |
+| gene                    |
+| transcript              |
++-------------------------+
+4 rows in set (0.00 sec)
+
+mysql> show columns from exon;
++-------------------+------------------+------+-----+---------+----------------+
+| Field             | Type             | Null | Key | Default | Extra          |
++-------------------+------------------+------+-----+---------+----------------+
+| exon_id           | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| seq_region_start  | int(10) unsigned | NO   | MUL | NULL    |                |
+| seq_region_end    | int(10) unsigned | NO   |     | NULL    |                |
+| seq_region_strand | tinyint(2)       | NO   |     | NULL    |                |
+| phase             | tinyint(2)       | NO   |     | NULL    |                |
+| end_phase         | tinyint(2)       | NO   |     | NULL    |                |
++-------------------+------------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> show columns from exon_transcript;
++---------------+------------------+------+-----+---------+-------+
+| Field         | Type             | Null | Key | Default | Extra |
++---------------+------------------+------+-----+---------+-------+
+| exon_id       | int(10) unsigned | NO   | PRI | NULL    |       |
+| transcript_id | int(10) unsigned | NO   | PRI | NULL    |       |
+| rank          | int(10)          | NO   | PRI | NULL    |       |
++---------------+------------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> show columns from gene;
++-------------------+------------------------------------------------------------------------------+------+-----+---------+----------------+
+| Field             | Type                                                                         | Null | Key | Default | Extra          |
++-------------------+------------------------------------------------------------------------------+------+-----+---------+----------------+
+| gene_id           | int(10) unsigned                                                             | NO   | PRI | NULL    | auto_increment |
+| biotype           | varchar(40)                                                                  | NO   |     | NULL    |                |
+| chromosome        | varchar(40)                                                                  | YES  |     | NULL    |                |
+| seq_region_start  | int(10) unsigned                                                             | NO   | MUL | NULL    |                |
+| seq_region_end    | int(10) unsigned                                                             | NO   |     | NULL    |                |
+| seq_region_strand | tinyint(2)                                                                   | NO   |     | NULL    |                |
+| gene_name         | varchar(128)                                                                 | YES  |     | NULL    |                |
+| source            | varchar(20)                                                                  | NO   |     | NULL    |                |
+| status            | enum('KNOWN','NOVEL','PUTATIVE','PREDICTED','KNOWN_BY_PROJECTION','UNKNOWN') | YES  |     | NULL    |                |
+| description       | text                                                                         | YES  |     | NULL    |                |
++-------------------+------------------------------------------------------------------------------+------+-----+---------+----------------+
+10 rows in set (0.00 sec)
+
+mysql> show columns from transcript;
++-------------------+------------------------------------------------------------------------------+------+-----+---------+----------------+
+| Field             | Type                                                                         | Null | Key | Default | Extra          |
++-------------------+------------------------------------------------------------------------------+------+-----+---------+----------------+
+| transcript_id     | int(10) unsigned                                                             | NO   | PRI | NULL    | auto_increment |
+| gene_id           | int(10) unsigned                                                             | NO   | MUL | NULL    |                |
+| seq_region_start  | int(10) unsigned                                                             | NO   | MUL | NULL    |                |
+| seq_region_end    | int(10) unsigned                                                             | NO   |     | NULL    |                |
+| seq_region_strand | tinyint(2)                                                                   | NO   |     | NULL    |                |
+| biotype           | varchar(40)                                                                  | NO   |     | NULL    |                |
+| status            | enum('KNOWN','NOVEL','PUTATIVE','PREDICTED','KNOWN_BY_PROJECTION','UNKNOWN') | YES  |     | NULL    |                |
+| description       | text                                                                         | YES  |     | NULL    |                |
++-------------------+------------------------------------------------------------------------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+
+4. Give the name and length of the smallest gene in the genome.
+
+   mysql> SELECT gene_name, (seq_region_end - seq_region_start +1) AS length FROM gene ORDER BY length ASC LIMIT 1;
+   
++-----------+--------+
+| gene_name | length |
++-----------+--------+
+| TRDD1     |      8 |
++-----------+--------+
+
+
+5. What is the name of the gene with the most transcripts? What is the number of transcripts of this gene?
+
+   mysql> SELECT gene_name, COUNT(*) as tot_transcripts FROM transcript JOIN gene ON transcript.gene_id = gene.gene_id GROUP BY gene_name ORDER BY tot_transcripts DESC LIMIT 1;
+   
++-----------+-----------------+
+| gene_name | tot_transcripts |
++-----------+-----------------+
+| U6        |            1329 |
++-----------+-----------------+
+
+
+6.1 Give the name of the chromosome with the second most genes that tell something about cancer.
+
+   mysql> SELECT chromosome, COUNT(gene_id) AS tot_genes FROM gene WHERE description LIKE '%cancer%' GROUP BY chromosome ORDER BY tot_genes DESC LIMIT 1 OFFSET 1;
+   
++------------+-----------+
+| chromosome | tot_genes |
++------------+-----------+
+| 9          |         5 |
++------------+-----------+
+
+6.2 What is the number of exons of this chromosome?
+
+   mysql> SELECT COUNT(*) AS tot_exon FROM exon JOIN exon_transcript ON exon.exon_id = exon_transcript.exon_id JOIN transcript ON exon_transcript.transcript_id = transcript.transcript_id JOIN gene ON transcript.gene_id = gene.gene_id WHERE chromosome = 9 GROUP BY chromosome ORDER BY tot_exon;
+   
++----------+
+| tot_exon |
++----------+
+|    45679 |
++----------+
+
+
+7. Give the number of rows from the exon table and do the same for the exon_transcript table. Explain why there is a difference in number of rows.
+
+   mysql> SELECT COUNT(*) FROM exon;
+   
++----------+
+| COUNT(*) |
++----------+
+|   642590 |
++----------+
+
+   mysql> SELECT COUNT(*) FROM exon_transcript;
+   
++----------+
+| COUNT(*) |
++----------+
+|  1178393 |
++----------+
+
+ --> A transcript can have multiple exons, but only one exon can belong to one transcript. Exon_transcript table is a crossreference table which connects both transcript and exon table.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
