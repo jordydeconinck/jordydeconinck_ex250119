@@ -1,0 +1,31 @@
+
+
+Each personnel number is unique
+Each lab has a single lab code
+Each research project has a single code and supervisor
+Each member of the personnel may work on one or more research projects
+Personnel names need not necessarily be unique
+Research code, description and supervisor are repeating fields
+
+
+
+UNF   DB(person_no, person_name, birth_date, lab_code, lab_name, research_code, research_descr, research_supervisor)
+
+
+1NF   DB(person_no, person_name, birth_date, research_id, lab_code, lab_name)
+      R1(research_id, research_code, research_descr, research_supervisor)
+      
+
+2NF   DB(person_no, person_name, birth_date research_id, lab_code)
+      R1(lab_code, lab_name)
+      R2(research_id, research_code, research_descr, ressearch_supervisor)
+ 
+
+ 3NF  DB(person_no, person_name, birth_date)
+      R1(person_no, research_id, lab_code)
+      R2(lab_code, lab_name)
+      R3(research_id, research_code, research_descr, research_supervisor) 
+      
+      
+      
+      
