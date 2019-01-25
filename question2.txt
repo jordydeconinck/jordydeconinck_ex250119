@@ -11,21 +11,28 @@ Research code, description and supervisor are repeating fields
 
 UNF   DB(person_no, person_name, birth_date, lab_code, lab_name, research_code, research_descr, research_supervisor)
 
+all entities are in one relation. 
+
 
 1NF   DB(person_no, person_name, birth_date, research_id, lab_code, lab_name)
       R1(research_id, research_code, research_descr, research_supervisor)
+      
+single values in every column (atomic), primary keys which identify every value in the tables
       
 
 2NF   DB(person_no, person_name, birth_date research_id, lab_code)
       R1(lab_code, lab_name)
       R2(research_id, research_code, research_descr, ressearch_supervisor)
  
+all rules of 1NF compliant, all non-key columns are dependent on the primary key of each table, create foreign keys
+
 
  3NF  DB(person_no, person_name, birth_date)
       R1(person_no, research_id, lab_code)
       R2(lab_code, lab_name)
       R3(research_id, research_code, research_descr, research_supervisor) 
       
+all rules of 2NF compliant, all non-key columns should be DIRECTLY dependent on primary key of each table 
       
       
       
